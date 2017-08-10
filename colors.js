@@ -7,20 +7,16 @@ var Colors = (function() {
 	var self = {};
 	self.rgb = {};
 
+	self.rgb.pattern = /rgb\((\d{1,3}),\s?(\d{1,3}),\s?(\d{1,3})\)/;
+
 	self.rgb.round = function(number) {
 		return Math.min(Math.max(Math.round(number), 0), 255);
 	};
 
 	self.rgb.extract = function(string) {
-		var pattern = /rgb\((\d{1,3}),\s?(\d{1,3}),\s?(\d{1,3})\)/;
-		var colors = pattern.exec(string.toLowerCase());
-		colors = colors.slice(1, 4);
-
-		for (var i = 0; i < colors.length; i++) {
-			colors[i] = parseInt(colors[i]);
-		}
-
-		return colors;
+		string = string.toString().toLowerCase();
+		var colors = self.rgb.pattern.exec(string);
+		return colors.slice(1, 4).map(Number);
 	};
 
 	self.rgb.string = function(colors) {
