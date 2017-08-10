@@ -8,14 +8,7 @@ var Colors = (function() {
 	self.rgb = {};
 
 	self.rgb.round = function(number) {
-		number = Math.round(number);
-		if (number < 0) {
-			return 0;
-		} else if (number > 255) {
-			return 255;
-		} else {
-			return number;
-		}
+		return Math.min(Math.max(Math.round(number), 0), 255);
 	};
 
 	self.rgb.extract = function(string) {
