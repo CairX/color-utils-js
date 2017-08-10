@@ -49,34 +49,49 @@ var Colors = (function() {
 		if (colors.length >= steps) {
 			return colors;
 		} else {
-			var transition = [];
+			var result = [];
+			var pairs = [];
 
-			//console.log(steps);
-			//console.log(colors.length);
-
-			steps = Math.round(steps / (colors.length  - 1)) + 1;
-			//console.log(steps);
-			// TODO: Handle overlapping colors of the transition.
 			for (var i = 0; i < colors.length - 1; i++) {
-				var c;
-				//console.log(c);
-
-				if (i < colors.length - 2) {
-					console.log("not last");
-					c = self.rgb.transition(colors[i], colors[i+1], steps + 1);
-					c = c.slice(0, c.length - 2);
-				} else {
-					console.log("last");
-					c = self.rgb.transition(colors[i], colors[i+1], steps);
-				}
-
-				Array.prototype.push.apply(transition, c);
+				pairs.push({
+					begin: colors[i],
+					end: colors[i + 1],
+					steps: 0
+				});
 			}
 
-			console.log(transition);
+			var everyOther = self.rgb.rangeEveryOther(pairs.length);
+			for (var j = 0, len = steps + (colors.length - 2); j < len; j++) {
+				pairs[everyOther[j % pairs.length]].steps++;
+			}
 
-			return transition;
+			pairs.forEach(function(pair, index) {
+				var transition = self.rgb.transition(pair.begin, pair.end, pair.steps);
+				if (index > 0) {
+					transition = transition.slice(1);
+				}
+				Array.prototype.push.apply(result, transition);
+			});
+
+			return result;
 		}
+	};
+
+	self.rgb.rangeEveryOther = function(length) {
+		length = length - 1;
+
+		var result = [];
+		var upper = Math.ceil(length / 2);
+		var lower = Math.floor(length / 2);
+
+		for (var i = 0; i <= upper; i++) {
+			result.push(i);
+
+			if (i < lower) {
+				result.push(length - i);
+			}
+		}
+		return result;
 	};
 
 	self.rgb.loop = function(first, second, steps) {
