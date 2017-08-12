@@ -19,6 +19,17 @@ var Colors = (function() {
 			string: function(raw) {
 				return "rgb(" + raw.red + ", " + raw.green + ", " + raw.blue + ")";
 			}
+		}, {
+			id: "rgba",
+			pattern: /rgba\((\d{1,3}),\s?(\d{1,3}),\s?(\d{1,3}),\s?([+-]?(\d*[.])?\d+)\)/i,
+			weight: 1,
+			extract: function(string) {
+				var values = this.pattern.exec(string).map(Number);
+				return { red: values[1], green: values[2], blue: values[3], alpha: values[4] * 255 };
+			},
+			string: function(raw) {
+				return "rgba(" + raw.red + ", " + raw.green + ", " + raw.blue + ", " + (raw.alpha / 255).toFixed(3) + ")";
+			}
 		}
 	];
 
