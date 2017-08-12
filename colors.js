@@ -5,79 +5,24 @@
 
 var Colors = (function() {
 	var self = {};
-	self.rgb = {};
+	var raw = {};
 
-	self.rgb.pattern = /rgb\((\d{1,3}),\s?(\d{1,3}),\s?(\d{1,3})\)/;
-
-	self.rgb.round = function(number) {
-		return Math.min(Math.max(Math.round(number), 0), 255);
-	};
-
-	self.rgb.extract = function(string) {
-		string = string.toString().toLowerCase();
-		var colors = self.rgb.pattern.exec(string);
-		return colors.slice(1, 4).map(Number);
-	};
-
-	self.rgb.string = function(colors) {
-		return "rgb(" + colors[0] + ", " + colors[1] + ", " + colors[2] + ")";
-	};
-
-	self.rgb.transition = function(start, end, steps) {
-		// TODO: Take color list to create multiple transitions instead of start and end.
-		start = self.rgb.extract(start);
-		end = self.rgb.extract(end);
-
-		var red = (end[0] - start[0]) / (steps - 1);
-		var green = (end[1] - start[1]) / (steps - 1);
-		var blue = (end[2] - start[2]) / (steps - 1);
-
-		var colors = [];
-		for (var i = 0; i < steps; i++) {
-			var tmp = [];
-			tmp[0] = self.rgb.round(start[0] + red * i);
-			tmp[1] = self.rgb.round(start[1] + green * i);
-			tmp[2] = self.rgb.round(start[2] + blue * i);
-
-			colors.push(self.rgb.string(tmp));
-		}
-
-		return colors;
-	};
-
-	self.rgb.transitions = function(colors, steps) {
-		if (colors.length >= steps) {
-			return colors;
-		} else {
-			var result = [];
-			var pairs = [];
-
-			for (var i = 0; i < colors.length - 1; i++) {
-				pairs.push({
-					begin: colors[i],
-					end: colors[i + 1],
-					steps: 0
-				});
+	var formats = [
+		{
+			id: "rgb",
+			pattern: /rgb\((\d{1,3}),\s?(\d{1,3}),\s?(\d{1,3})\)/i,
+			weight: 0,
+			extract: function(string) {
+				var values = this.pattern.exec(string).map(Number);
+				return { red: values[1], green: values[2], blue: values[3], alpha: 255 };
+			},
+			string: function(raw) {
+				return "rgb(" + raw.red + ", " + raw.green + ", " + raw.blue + ")";
 			}
-
-			var everyOther = self.rgb.rangeEveryOther(pairs.length);
-			for (var j = 0, len = steps + (colors.length - 2); j < len; j++) {
-				pairs[everyOther[j % pairs.length]].steps++;
-			}
-
-			pairs.forEach(function(pair, index) {
-				var transition = self.rgb.transition(pair.begin, pair.end, pair.steps);
-				if (index > 0) {
-					transition = transition.slice(1);
-				}
-				Array.prototype.push.apply(result, transition);
-			});
-
-			return result;
 		}
-	};
+	];
 
-	self.rgb.rangeEveryOther = function(length) {
+	raw.rangeEveryOther = function(length) {
 		length = length - 1;
 
 		var result = [];
@@ -94,11 +39,106 @@ var Colors = (function() {
 		return result;
 	};
 
-	self.rgb.loop = function(first, second, steps) {
+	raw.clamp = function(number) {
+		return Math.min(Math.max(Math.round(number), 0), 255);
+	};
+
+	raw.transition = function(start, end, steps) {
+		var step = {
+			red: (end.red - start.red) / (steps - 1),
+			green: (end.green - start.green) / (steps - 1),
+			blue: (end.blue - start.blue) / (steps - 1),
+			alpha: (end.alpha - start.alpha) / (steps - 1)
+		};
+
+		var colors = [];
+		for (var i = 0; i < steps; i++) {
+			colors.push({
+				red: raw.clamp(start.red + step.red * i),
+				green: raw.clamp(start.green + step.green * i),
+				blue: raw.clamp(start.blue + step.blue * i),
+				alpha: raw.clamp(start.alpha + step.alpha * i)
+			});
+		}
+
+		return colors;
+	};
+
+	self.format = function(string) {
+		for (var i = 0; i < formats.length; i++) {
+			var format = formats[i];
+			if (format.pattern.test(string)) {
+				return { raw: format.extract(string), format: format };
+			}
+		}
+		return null;
+	};
+
+	self.transition = function(start, end, steps) {
+		start = self.format(start);
+		end = self.format(end);
+
+		var colors = raw.transition(start.raw, end.raw, steps);
+		var format = start.format.weight >= end.format.weight ? start.format : end.format;
+
+		return colors.map(function(color) {
+			return format.string(color);
+		});
+	};
+
+	self.transitions = function(colors, steps) {
+		if (steps < colors.length) {
+			return colors;
+		} else {
+			var result = [];
+			var pairs = [];
+
+			colors = colors.map(function(color) {
+				return self.format(color);
+			});
+
+			for (var i = 0; i < colors.length - 1; i++) {
+				pairs.push({ begin: colors[i].raw, end: colors[i + 1].raw, steps: 0 });
+			}
+
+			var everyOther = raw.rangeEveryOther(pairs.length);
+			for (var j = 0, len = steps + (colors.length - 2); j < len; j++) {
+				pairs[everyOther[j % pairs.length]].steps++;
+			}
+
+			pairs.forEach(function(pair, index) {
+				var transition = raw.transition(pair.begin, pair.end, pair.steps);
+				if (index > 0) {
+					transition = transition.slice(1);
+				}
+				Array.prototype.push.apply(result, transition);
+			});
+
+			var format = colors[0].format;
+			for (var k = 1; k < colors.length; k++) {
+				format = format.weight >= colors[k].format.weight ? format : colors[k].format;
+			}
+			console.log(format);
+
+			return result.map(function(color) {
+				return format.string(color);
+			});
+		}
+	};
+
+	self.loop = function(first, second, steps) {
+		first = self.format(first);
+		second = self.format(second);
 		steps = (steps + 2) / 2;
-		var transition = self.rgb.transition(first, second, steps);
+
+		var transition = raw.transition(first.raw, second.raw, steps);
 		var complete = transition.slice(0, transition.length - 1);
-		return complete.concat(transition.slice(1).reverse());
+		var colors = complete.concat(transition.slice(1).reverse());
+		var format = first.format.weight >= second.format.weight ? first.format : second.format;
+
+		return colors.map(function(color) {
+			return format.string(color);
+		});
 	};
 
 	return self;
