@@ -1,5 +1,4 @@
 /* exported Colors */
-/* global console */
 
 "use strict";
 
