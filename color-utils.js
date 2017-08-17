@@ -166,40 +166,40 @@ var ColorUtils = (function() {
 	self.transitions = function(colors, steps) {
 		if (steps < colors.length) {
 			return colors;
-		} else {
-			var result = [];
-			var pairs = [];
-
-			colors = colors.map(function(color) {
-				return self.format(color);
-			});
-
-			for (var i = 0; i < colors.length - 1; i++) {
-				pairs.push({ begin: colors[i].raw, end: colors[i + 1].raw, steps: 0 });
-			}
-
-			var everyOther = raw.rangeEveryOther(pairs.length);
-			for (var j = 0, len = steps + (colors.length - 2); j < len; j++) {
-				pairs[everyOther[j % pairs.length]].steps++;
-			}
-
-			pairs.forEach(function(pair, index) {
-				var transition = raw.transition(pair.begin, pair.end, pair.steps);
-				if (index > 0) {
-					transition = transition.slice(1);
-				}
-				Array.prototype.push.apply(result, transition);
-			});
-
-			var format = colors[0].format;
-			for (var k = 1; k < colors.length; k++) {
-				format = format.weight >= colors[k].format.weight ? format : colors[k].format;
-			}
-
-			return result.map(function(color) {
-				return format.string(color);
-			});
 		}
+
+		var result = [];
+		var pairs = [];
+
+		colors = colors.map(function(color) {
+			return self.format(color);
+		});
+
+		for (var i = 0; i < colors.length - 1; i++) {
+			pairs.push({ begin: colors[i].raw, end: colors[i + 1].raw, steps: 0 });
+		}
+
+		var everyOther = raw.rangeEveryOther(pairs.length);
+		for (var j = 0, len = steps + (colors.length - 2); j < len; j++) {
+			pairs[everyOther[j % pairs.length]].steps++;
+		}
+
+		pairs.forEach(function(pair, index) {
+			var transition = raw.transition(pair.begin, pair.end, pair.steps);
+			if (index > 0) {
+				transition = transition.slice(1);
+			}
+			Array.prototype.push.apply(result, transition);
+		});
+
+		var format = colors[0].format;
+		for (var k = 1; k < colors.length; k++) {
+			format = format.weight >= colors[k].format.weight ? format : colors[k].format;
+		}
+
+		return result.map(function(color) {
+			return format.string(color);
+		});
 	};
 
 	self.loop = function(first, second, steps) {
