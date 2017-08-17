@@ -1,8 +1,8 @@
-/* exported Colors */
+/* exported ColorUtils */
 
 "use strict";
 
-var Colors = (function() {
+var ColorUtils = (function() {
 	var self = {};
 	var raw = {};
 
