@@ -132,8 +132,90 @@ Result
       #65953f, #61993f, #5d9d3f, #59a13f, #54a63f,
       #50aa3f, #4cae3f, #48b23f, #43b73f, #3fbb3f ]
 
+
 Textual presentation of the colors stored in the variable ``transition`` after execution.
 
 .. image:: docs/color-utils-example-transition.png
 
 Visual presentation of the colors stored in the variable ``transition`` after execution.
+
+
+Transitions
+=================================================
+Generate a list of colors that transitions between multiple colors. Could also be described as a linear gradient.
+
+Signature
+-------------------------------------------------
+::
+
+    ColorUtils.transitions(colors, steps)
+
+
+
+Parameters
+-------------------------------------------------
++-----------+-------------+----------------------------------------------------+
+| Name      | Type        | Description                                        |
++===========+=============+====================================================+
+| colors    | array       | Collection of strings describing the colors that   |
+|           |             | should be transitioned. Order of the collection    |
+|           |             | will be the order or transition.                   |
+|           |             | Information about supported `Color Formats`_       |
++-----------+-------------+----------------------------------------------------+
+| steps     | int         | The total number of colors generated for the       |
+|           |             | transition, each color in the specified            |
+|           |             | collection included.                               |
+|           |             | The values has to be at least the length of        |
+|           |             | the collection.                                    |
++-----------+-------------+----------------------------------------------------+
+
+Returns
+-------------------------------------------------
++-------------+--------------------------------------------------------------------------------------------------------+
+| Type        | Description                                                                                            |
++-------------+--------------------------------------------------------------------------------------------------------+
+| array       | Collection of colors in string format creating a gradient between each color specified in ``colors``.  |
+|             | The length of the collection will be equal to the number of ``steps`` specified.                       |
+|             | Position 0 in the collection will be equal to the first color in ``colors`` and position ``steps - 1`` |
+|             | will be equal to the last color im ``colors``.                                                         |
++-------------+--------------------------------------------------------------------------------------------------------+
+
+Notes
+-------------------------------------------------
+The colors may be entered using different color formats.
+The returned collection will however only consist of one color format.
+What format is chosen is based on the weight of the formats used.
+The weight that is the heaviest will selected primarily.
+If weights are equal the one that occurs will take precedence.
+Information about each formats weight you can find under the section `Color Formats`_.
+
+
+
+Example
+-------------------------------------------------
+Code
++++++++++++++++++++++++++++++++++++++++++++++++++
+.. code:: javascript
+
+    var red = "#bb3f3f";
+    var green = "#3fbb3f";
+    var blue = "rgba(63, 63, 187, 1)";
+    var colors = [red, green, blue];
+    var steps = 9;
+    var transitions = ColorUtils.transitions(colors, steps);
+
+
+Result
++++++++++++++++++++++++++++++++++++++++++++++++++
+::
+
+    [ rgba(187, 63, 63, 1.000), rgba(156, 94, 63, 1.000), rgba(125, 125, 63, 1.000),
+      rgba(94, 156, 63, 1.000), rgba(63, 187, 63, 1.000), rgba(63, 156, 94, 1.000),
+      rgba(63, 125, 125, 1.000), rgba(63, 94, 156, 1.000), rgba(63, 63, 187, 1.000) ]
+
+
+Textual presentation of the colors stored in the variable ``transitions`` after execution.
+
+.. image:: docs/color-utils-example-transitions.png
+
+Visual presentation of the colors stored in the variable ``transitions`` after execution.
