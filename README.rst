@@ -67,7 +67,7 @@ Signature
 -------------------------------------------------
 ::
 
-    ColorUtils.transition(start, end, steps)
+    ColorUtils.loop(first, second, steps)
 
 
 
@@ -76,10 +76,10 @@ Parameters
 +-----------+-------------+----------------------------------------------------+
 | Name      | Type        | Description                                        |
 +===========+=============+====================================================+
-| start     | string      | First color in the transition.                     |
+| start     | string      | Start color in the transition.                     |
 |           |             | Information about supported `Color Formats`_       |
 +-----------+-------------+----------------------------------------------------+
-| end       | string      | Second color in the transition.                    |
+| end       | string      | End color in the transition.                       |
 |           |             | Information about supported `Color Formats`_       |
 +-----------+-------------+----------------------------------------------------+
 | steps     | int         | The total number of colors generated for the       |
@@ -219,3 +219,87 @@ Textual presentation of the colors stored in the variable ``transitions`` after 
 .. image:: docs/color-utils-example-transitions.png
 
 Visual presentation of the colors stored in the variable ``transitions`` after execution.
+
+
+Loop
+=================================================
+Generate a list of colors that loops between two colors.
+Can be used for a constant rotation between two colors.
+
+Signature
+-------------------------------------------------
+::
+
+    ColorUtils.transitions(colors, steps)
+
+
+
+Parameters
+-------------------------------------------------
++-----------+-------------+----------------------------------------------------+
+| Name      | Type        | Description                                        |
++===========+=============+====================================================+
+| first     | string      | First color in the transition.                     |
+|           |             | Information about supported `Color Formats`_       |
++-----------+-------------+----------------------------------------------------+
+| second    | string      | Second color in the transition.                    |
+|           |             | Information about supported `Color Formats`_       |
++-----------+-------------+----------------------------------------------------+
+| steps     | int         | The total number of colors generated for the       |
+|           |             | transition, each color in the specified            |
+|           |             | collection included.                               |
+|           |             | The values has to be at least the length of        |
+|           |             | the collection.                                    |
++-----------+-------------+----------------------------------------------------+
+
+Returns
+-------------------------------------------------
++-------------+--------------------------------------------------------------------------------------------------------+
+| Type        | Description                                                                                            |
++-------------+--------------------------------------------------------------------------------------------------------+
+| array       | Collection of colors in string format creating a loop between ``first`` to ``second`` color.           |
+|             | With two transitions, one from ``first`` to ``second`` and then one that does the reverse.             |
+|             | The length of the collection will be equal to the number of ``steps`` specified.                       |
++-------------+--------------------------------------------------------------------------------------------------------+
+
+Notes
+-------------------------------------------------
+The specified colors will only be present once in the loop.
+No repetition of color means that it will become a smooth rotation when looped.
+
+The colors may be entered using different color formats.
+The returned collection will however only consist of one color format.
+What format is chosen is based on the weight of the formats used.
+The weight that is the heaviest will selected primarily.
+If weights are equal the one that occurs will take precedence.
+Information about each formats weight you can find under the section `Color Formats`_.
+
+Example
+-------------------------------------------------
+Code
++++++++++++++++++++++++++++++++++++++++++++++++++
+.. code:: javascript
+
+    var red = "#bb3f3f";
+    var green = "#3fbb3f";
+    var steps = 30;
+    var loop = ColorUtils.loop(red, green, steps);
+
+
+Result
++++++++++++++++++++++++++++++++++++++++++++++++++
+::
+
+    [ #bb3f3f, #b3473f, #aa503f, #a2583f, #9a603f,
+      #92683f, #89713f, #81793f, #79813f, #71893f,
+      #68923f, #609a3f, #58a23f, #50aa3f, #47b33f,
+      #3fbb3f, #47b33f, #50aa3f, #58a23f, #609a3f,
+      #68923f, #71893f, #79813f, #81793f, #89713f,
+      #92683f, #9a603f, #a2583f, #aa503f, #b3473f ]
+
+
+Textual presentation of the colors stored in the variable ``loop`` after execution.
+
+.. image:: docs/color-utils-example-loop.png
+
+Visual presentation of the colors stored in the variable ``loop`` after execution.
