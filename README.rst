@@ -59,6 +59,72 @@ Hexadecimal notation
 Methods
 =================================================
 
+Lerp
+=================================================
+Generate a color that is a blend between two colors using linear interpolation.
+
+Signature
+-------------------------------------------------
+::
+
+    ColorUtils.lerp(first, second, blend)
+
+
+
+Parameters
+-------------------------------------------------
++-----------+-------------+----------------------------------------------------+
+| Name      | Type        | Description                                        |
++===========+=============+====================================================+
+| start     | string      | Start color in the transition.                     |
+|           |             | Information about supported `Color Formats`_       |
++-----------+-------------+----------------------------------------------------+
+| end       | string      | End color in the transition.                       |
+|           |             | Information about supported `Color Formats`_       |
++-----------+-------------+----------------------------------------------------+
+| blend     | float       | Specifies how much of each color should be used.   |
+|           |             | Blend ``0`` will return the start value.           |
+|           |             | Respectively ``1`` will return the end color.      |
+|           |             | A even blend is achieved using ``0.5``.            |
++-----------+-------------+----------------------------------------------------+
+
+Returns
+-------------------------------------------------
++-------------+--------------------------------------------------------------------------------------------------------+
+| Type        | Description                                                                                            |
++-------------+--------------------------------------------------------------------------------------------------------+
+| string      | A new color that is a blend between the colors specified as ``start`` and ``end``.                     |
++-------------+--------------------------------------------------------------------------------------------------------+
+
+Notes
+-------------------------------------------------
+The start and end colors may be entered using different color formats.
+The returned collection will however only consist of one color format.
+What format is chosen is based on the weight of the formats used.
+The weight that is the heaviest will selected primarily.
+If weights are equal the one that occurs will take precedence.
+Information about each formats weight you can find under the section `Color Formats`_.
+
+Example
+-------------------------------------------------
+Code
++++++++++++++++++++++++++++++++++++++++++++++++++
+.. code:: javascript
+
+    var red = "#bb3f3f";
+    var green = "#3fbb3f";
+    var blend = 0.5;
+    var color = ColorUtils.lerp(red, green, blend);
+
+
+Result
++++++++++++++++++++++++++++++++++++++++++++++++++
+::
+
+    #7d7d3f
+
+
+
 Transition
 =================================================
 Generate a list of colors that transitions between two colors. Could also be described as a linear gradient.

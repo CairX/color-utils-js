@@ -120,6 +120,19 @@ var ColorUtils = (function() {
 		return Math.min(Math.max(Math.round(number), 0), 255);
 	};
 
+	raw.lerpValue = function(start, end, blend) {
+		return Math.round((1 - blend) * start + blend * end);
+	};
+
+	raw.lerp = function(start, end, blend) {
+		return {
+			red: raw.lerpValue(start.red, end.red, blend),
+			green: raw.lerpValue(start.green, end.green, blend),
+			blue: raw.lerpValue(start.blue, end.blue, blend),
+			alpha: raw.lerpValue(start.alpha, end.alpha, blend)
+		};
+	};
+
 	raw.transition = function(start, end, steps) {
 		var step = {
 			red: (end.red - start.red) / (steps - 1),
@@ -149,6 +162,13 @@ var ColorUtils = (function() {
 			}
 		}
 		return null;
+	};
+
+	self.lerp = function(start, end, blend) {
+		start = self.format(start);
+		end = self.format(end);
+		var format = start.format.weight >= end.format.weight ? start.format : end.format;
+		return format.string(raw.lerp(start.raw, end.raw, blend));
 	};
 
 	self.transition = function(start, end, steps) {
