@@ -134,23 +134,11 @@ var ColorUtils = (function() {
 	};
 
 	raw.transition = function(start, end, steps) {
-		var step = {
-			red: (end.red - start.red) / (steps - 1),
-			green: (end.green - start.green) / (steps - 1),
-			blue: (end.blue - start.blue) / (steps - 1),
-			alpha: (end.alpha - start.alpha) / (steps - 1)
-		};
-
 		var colors = [];
+		var blend = 1 / (steps - 1);
 		for (var i = 0; i < steps; i++) {
-			colors.push({
-				red: raw.clamp(start.red + step.red * i),
-				green: raw.clamp(start.green + step.green * i),
-				blue: raw.clamp(start.blue + step.blue * i),
-				alpha: raw.clamp(start.alpha + step.alpha * i)
-			});
+			colors.push(raw.lerp(start, end, blend * i));
 		}
-
 		return colors;
 	};
 
