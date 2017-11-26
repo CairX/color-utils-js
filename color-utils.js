@@ -159,18 +159,6 @@ var ColorUtils = (function() {
 		return format.string(raw.lerp(start.raw, end.raw, blend));
 	};
 
-	self.transition = function(start, end, steps) {
-		start = self.format(start);
-		end = self.format(end);
-
-		var colors = raw.transition(start.raw, end.raw, steps);
-		var format = start.format.weight >= end.format.weight ? start.format : end.format;
-
-		return colors.map(function(color) {
-			return format.string(color);
-		});
-	};
-
 	self.transitions = function(colors, steps) {
 		if (steps < colors.length) {
 			return colors;
@@ -208,6 +196,10 @@ var ColorUtils = (function() {
 		return result.map(function(color) {
 			return format.string(color);
 		});
+	};
+
+	self.transition = function(start, end, steps) {
+		return self.transitions([start, end], steps);
 	};
 
 	self.loop = function(first, second, steps) {
