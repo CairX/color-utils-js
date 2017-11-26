@@ -116,10 +116,6 @@ var ColorUtils = (function() {
 		return result;
 	};
 
-	raw.clamp = function(number) {
-		return Math.min(Math.max(Math.round(number), 0), 255);
-	};
-
 	raw.lerpValue = function(start, end, blend) {
 		return Math.round((1 - blend) * start + blend * end);
 	};
