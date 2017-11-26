@@ -211,18 +211,7 @@ var ColorUtils = (function() {
 	};
 
 	self.loop = function(first, second, steps) {
-		first = self.format(first);
-		second = self.format(second);
-		steps = (steps + 2) / 2;
-
-		var transition = raw.transition(first.raw, second.raw, steps);
-		var complete = transition.slice(0, transition.length - 1);
-		var colors = complete.concat(transition.slice(1).reverse());
-		var format = first.format.weight >= second.format.weight ? first.format : second.format;
-
-		return colors.map(function(color) {
-			return format.string(color);
-		});
+		return self.transitions([first, second, first], steps);
 	};
 
 	return self;
