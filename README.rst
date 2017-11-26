@@ -102,7 +102,7 @@ The start and end colors may be entered using different color formats.
 The returned collection will however only consist of one color format.
 What format is chosen is based on the weight of the formats used.
 The weight that is the heaviest will selected primarily.
-If weights are equal the one that occurs will take precedence.
+If weights are equal the one that occurs first will take precedence.
 Information about each formats weight you can find under the section `Color Formats`_.
 
 Example
@@ -170,7 +170,7 @@ The start and end colors may be entered using different color formats.
 The returned collection will however only consist of one color format.
 What format is chosen is based on the weight of the formats used.
 The weight that is the heaviest will selected primarily.
-If weights are equal the one that occurs will take precedence.
+If weights are equal the one that occurs first will take precedence.
 Information about each formats weight you can find under the section `Color Formats`_.
 
 
@@ -252,7 +252,7 @@ The colors may be entered using different color formats.
 The returned collection will however only consist of one color format.
 What format is chosen is based on the weight of the formats used.
 The weight that is the heaviest will selected primarily.
-If weights are equal the one that occurs will take precedence.
+If weights are equal the one that occurs first will take precedence.
 Information about each formats weight you can find under the section `Color Formats`_.
 
 
@@ -337,7 +337,7 @@ The colors may be entered using different color formats.
 The returned collection will however only consist of one color format.
 What format is chosen is based on the weight of the formats used.
 The weight that is the heaviest will selected primarily.
-If weights are equal the one that occurs will take precedence.
+If weights are equal the one that occurs first will take precedence.
 Information about each formats weight you can find under the section `Color Formats`_.
 
 Example
